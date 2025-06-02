@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.DishMapper">
+    <insert id="insertBatch">
+        insert into dish_flavor (dish_id, name, value) values
+        <foreach collection="flavors" item="flavor" separator=",">
+            (#{flavor.dishId},#{flavor.name},#{flavor.value})
+        </foreach>
+    </insert>
+    <delete id="deleteBatch">
+        delete from dish where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteFlavorBatch">
+        delete from dish_flavor where dish_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="pageQuery" resultType="com.sky.vo.DishVO">
+        select d1.* , c.name as categoryName from dish d1, category c where d1.category_id = c.id
+            <if test="name != null and name != ''">
+                and d1.name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and d1.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and d1.status = #{status}
+            </if>
+        order by d1.update_time desc
+    </select>
+</mapper>

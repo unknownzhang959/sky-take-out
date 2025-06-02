@@ -9,6 +9,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -78,10 +79,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         // 设置属性
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         employee.setStatus(StatusConstant.ENABLE);
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         //保存员工数据
         employeeMapper.insert(employee);
     }
@@ -107,14 +108,50 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void startOrStop(Integer status, Long id) {
+         /**
+         * 创建一个员工对象, 用员工DTO对象赋值给员工对象
+         * 设置属性
+         * 调用员工mapper的update方法
+         */
          Employee employee = Employee.builder()
                 .status(status)
                 .id(id)
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
+//                .updateTime(LocalDateTime.now())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
          employeeMapper.update(employee);
 
+    }
+
+    @Override
+    public Employee getById(Long id) {
+         return employeeMapper.getById(id);
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+    }
+
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        Employee employee = employeeMapper.getById(BaseContext.getCurrentId());
+        // 判断旧密码是否正确
+         if (!employee.getPassword().equals(DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes()))) {
+             throw new PasswordErrorException(MessageConstant.OLDPASSWORD_ERROR);
+         }
+         //判断旧密码和新密码 是否一致
+         if (passwordEditDTO.getOldPassword().equals(passwordEditDTO.getNewPassword())) {
+             throw new PasswordErrorException(MessageConstant.OLDPASSWORDEQUALSNEWPASSWORD_ERROR);
+         }
+        employee.setPassword(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()));
+          employee.setUpdateTime(LocalDateTime.now());
+           employee.setUpdateUser(employee.getId());
+         employeeMapper.update(employee);
     }
 
 

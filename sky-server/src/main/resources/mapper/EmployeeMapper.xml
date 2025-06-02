@@ -7,6 +7,7 @@
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
             <if test="phone != null">phone = #{phone},</if>
             <if test="sex != null">sex = #{sex},</if>
             <if test="idNumber != null">id_number = #{idNumber},</if>
@@ -16,6 +17,9 @@
         </set>
         where id = #{id}
     </update>
+
+
+
     <select id="list" resultType="com.sky.entity.Employee">
         select * from employee
                  <where>
