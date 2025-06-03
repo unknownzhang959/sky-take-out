@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.SetmealMapper">
+    <!--    套餐表操作-->
+    <delete id="deleteBatch">
+        delete from setmeal where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
+        select s1.* , c.name as categoryName from setmeal s1, category c where s1.category_id = c.id
+        <if test="name != null and name != ''">
+            and s1.name like concat('%',#{name},'%')
+        </if>
+        <if test="categoryId != null">
+            and s1.category_id = #{categoryId}
+        </if>
+        <if test="status != null">
+            and s1.status = #{status}
+        </if>
+        order by s1.update_time desc
+    </select>
+    <update id="update">
+        update setmeal
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="image != null">
+                image = #{image},
+            </if>
+            <if test="description != null">
+                description = #{description},
+           </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser}
+            </if>
+    where id = #{id}
+        </set>
+    </update>
+    <select id="getByIdWithDish" resultType="com.sky.vo.SetmealVO">
+        select s1.* , c.name as categoryName from setmeal s1, category c where s1.category_id = c.id and s1.id = #{id}
+    </select>
+
+
+
+
+
+
+<!--套餐和菜品关系表操作-->
+    <delete id="deleteSetmealDishBatch">
+        delete from setmeal_dish where setmeal_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
