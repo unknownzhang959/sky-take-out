@@ -2,6 +2,7 @@ package com.sky.service;
 
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.result.PageResult;
 import com.sky.vo.DishVO;
 
@@ -20,6 +21,8 @@ public interface DishService {
     void update(DishDTO dishDTO);
     // 起售停售
     void startOrStop(Integer status, Long id);
-    // 根据分类id查询菜品
+    // 管理端：根据分类id查询菜品，包括起售和停售的
     List<DishVO> list(Long categoryId);
+    //  C端：根据条件查询菜品数据，只有启售的
+    List<DishVO> listWithFlavor(Dish dish);
 }

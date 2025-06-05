@@ -54,6 +54,20 @@
     <select id="getByIdWithDish" resultType="com.sky.vo.SetmealVO">
         select s1.* , c.name as categoryName from setmeal s1, category c where s1.category_id = c.id and s1.id = #{id}
     </select>
+    <select id="list" parameterType="Setmeal" resultType="Setmeal">
+        select * from setmeal
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
 
 
 
