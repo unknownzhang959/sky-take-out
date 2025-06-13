@@ -27,4 +27,7 @@ public class MessageConstant {
     public static final String ALREADY_EXISTS = "已存在";
     public static final String OLDPASSWORD_ERROR = "原密码错误";
     public static final String OLDPASSWORDEQUALSNEWPASSWORD_ERROR = "旧密码和新密码一致！请重新设置密码！";
+    public static final String CANCELLED_REASON = "用户取消";
+
+    public static final String ORDER_TIMEOUT_CANCELLED = "订单超时，自动取消";
 }

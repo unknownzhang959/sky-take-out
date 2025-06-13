@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.ReportMapper">
+    <select id="sumByMap" resultType="java.lang.Double">
+        select sum(amount) from orders
+        <where>
+            <if test="beginTime != null">
+                and order_time &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                and order_time &lt;= #{endTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from orders
+        <where>
+            <if test="beginTime != null">
+                and order_time &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                and order_time &lt;= #{endTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="getSalesTop10" resultType="java.util.Map">
+        select name , count(order_detail.number) as number from order_detail
+        left join orders on orders.id = order_detail.order_id
+        where order_time &gt;= #{beginTime} and order_time &lt;= #{endTime}
+        group by name
+        order by count(order_detail.number) desc
+        limit 10
+    </select>
+    <select id="countUserByMap" resultType="java.lang.Integer">
+        select count(id) from user
+        <where>
+            <if test="beginTime != null">
+                and create_time &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null">
+                and create_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+</mapper>

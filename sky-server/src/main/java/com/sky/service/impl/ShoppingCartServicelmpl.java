@@ -33,7 +33,7 @@ public class ShoppingCartServicelmpl implements ShoppingCartService {
         shoppingCart.setUserId(BaseContext.getCurrentId());
         List<ShoppingCart> carts = shoppingCartMapper.list(shoppingCart);
         //判断购物车中是否存在该商品
-        if (carts == null){ //如果购物车中不存在该商品，则添加到购物车中
+        if (carts == null || carts.isEmpty()){ //如果购物车中不存在该商品，则添加到购物车中
             //判断购物车中该商品是否为菜品
             if (shoppingCartDTO.getDishId() != null){
                 Dish d = dishMapper.getById(shoppingCartDTO.getDishId());
